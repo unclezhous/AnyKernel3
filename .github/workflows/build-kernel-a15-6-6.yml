@@ -55,7 +55,7 @@ on:
         description: "是否获取KSU管理器"
         required: true
         type: boolean
-        default: true
+        default: false
 
       BBG:
         description: "LSM写保护(一般保持false)"
