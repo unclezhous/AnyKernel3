@@ -1,9 +1,9 @@
 name: 编译内核a15-6-6
 
 permissions:
-  contents: write  # Allow writing to repository contents (for pushing tags)
-  actions: write   # Allows triggering actions
-  
+  contents: write
+  actions: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -17,42 +17,55 @@ on:
           - MKSU
           - SukiSU
         default: SukiSU
+
       kernelsu_branch:
         description: "选择 ksu 分支"
         required: true
         type: choice
         options:
-          - Stable(标准)
-          - Dev(开发)
-          - Other(其他/指定)
-        default: Dev(开发)
+          - Stable
+          - Dev
+          - Other
+        default: Dev
+
       version:
-        description: '自定义版本名(如位于6.6.77-android15-8<自定义版本名>/留空则使用默认版本号)'
+        description: "自定义版本名"
         required: false
         type: string
+
       use_zram:
-        description: '是否开启增加更多ZRAM算法?'
+        description: "是否开启ZRAM算法"
         required: true
         type: boolean
         default: true
+
       use_kpm:
-        description: '是否开启KPM功能?'
+        description: "是否开启KPM功能"
         required: false
         type: boolean
         default: true
+
       supp_op:
-        description: '是否开启一加8E处理器机型支持?(非该机型无须勾)'
+        description: "一加8E支持(非该机型勿选)"
         required: false
         type: boolean
         default: false
+
       get_manager:
-        description: '是否同时获取最新KSU管理器?（实验性功能，报错请关闭）'
+        description: "是否获取KSU管理器"
         required: true
         type: boolean
         default: true
+
+      BBG:
+        description: "LSM写保护(一般保持false)"
+        required: false
+        type: boolean
+        default: false
+
 jobs:
 
- build-kernel-a15-6-6:
+  build-kernel-a15-6-6:
     uses: ./.github/workflows/kernel-a15-6.6.yml
     secrets: inherit
     with:
@@ -63,7 +76,9 @@ jobs:
       use_zram: ${{ inputs.use_zram }}
       use_kpm: ${{ inputs.use_kpm }}
       supp_op: ${{ inputs.supp_op }}
- get-ksu-manager:
+      BBG: ${{ inputs.BBG }}
+
+  get-ksu-manager:
     if: ${{ inputs.get_manager }}
     uses: ./.github/workflows/get-manager.yml
     secrets: inherit
